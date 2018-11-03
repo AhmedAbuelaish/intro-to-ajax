@@ -73,26 +73,6 @@
   //
   // TODO: your code goes here :) 
 
-$('#generateDoggoBtn').click(clickDoggo)
-
-const randomDogURL = 'https://dog.ceo/api/breeds/image/random'
-  
-function clickDoggo (){
-  console.log('getting JSON data')
-  $.getJSON(randomDogURL, receiveRandomDog)
-  console.log('changing button text & disabling')
-  $('#generateDoggoBtn').html('Generating Doggo...').prop('disabled',true)
-}
-
-function receiveRandomDog (data) {
-  console.log('receive random dog:')
-  // console.log(data)
-  // console.log(data.message)
-  console.log('loading doggo picture')
-  $('#doggoContainer').html('<img src="' + data.message + '">')
-  console.log('changing button text back & renabling')
-  $('#generateDoggoBtn').html('Generate Doggo').prop('disabled',false)
-}
 
 
 //
@@ -129,11 +109,15 @@ function receiveRandomDog (data) {
 //    You should now be able to view random pictures of specific dog breeds via the menu!
 //
 
-$('#selectBreedContainer').html('<select id="breedSelector"></select>')
+$('#generateDoggoBtn').click(clickDoggo)
+
+const randomDogURL = 'https://dog.ceo/api/breeds/image/random'
 const doggoBreedListURL = 'https://dog.ceo/api/breeds/list'
 
+$('#selectBreedContainer').html('<select id="breedSelector"></select>')
 
 $('#breedSelector').ready(loadBreedList)
+$('#breedSelector').on('change',clickDoggo)
 
 function loadBreedList () {
 
@@ -142,6 +126,25 @@ function loadBreedList () {
     beforeSend: console.log('getting ajax data')
   })
     .done(receiveBreedList)
+}
+
+function clickDoggo (){
+  let breed = $('#breedSelector option:selected').val()
+  console.log(breed)
+  console.log('getting JSON data for specific breed')
+  $.getJSON('https://dog.ceo/api/breed/' + breed + '/images/random', receiveRandomDog)
+  console.log('changing button text & disabling')
+  $('#generateDoggoBtn').html('Generating Doggo...').prop('disabled',true)
+}
+
+function receiveRandomDog (data) {
+  console.log('receive random dog:')
+  // console.log(data)
+  // console.log(data.message)
+  console.log('loading doggo picture')
+  $('#doggoContainer').html('<img src="' + data.message + '">')
+  console.log('changing button text back & renabling')
+  $('#generateDoggoBtn').html('Generate Doggo').prop('disabled',false)
 }
 
 function receiveBreedList (data) {
@@ -153,26 +156,9 @@ function receiveBreedList (data) {
   }))
 }
 
-$('#breedSelector').on('change',changeBreed)
 
-function changeBreed (){
-  let breed = $('#breedSelector option:selected').val()
-  console.log(breed)
-  console.log('getting JSON data for specific breed')
-  $.getJSON('https://dog.ceo/api/breed/' + breed + '/images/random', receiveRandomBreedDog)
-  console.log('changing button text & disabling')
-  $('#generateDoggoBtn').html('Generating Doggo...').prop('disabled',true)
-}
 
-function receiveRandomBreedDog (data) {
-  console.log('receive random dog:')
-  // console.log(data)
-  // console.log(data.message)
-  console.log('loading doggo picture')
-  $('#doggoContainer').html('<img src="' + data.message + '">')
-  console.log('changing button text back & renabling')
-  $('#generateDoggoBtn').html('Generate Doggo').prop('disabled',false)
-}
+
 
 
 //
